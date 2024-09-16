@@ -63,6 +63,19 @@ console.log('JWT Token:', token);
 const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
 
 console.log('Decoded Payload:', decoded);
+if (new Date().getTime() - decoded.timestamp > 60 * 60 * 1000) {
+    throw new Error('invalid timestamp')
+}
+
+/* 
+    redis.get(`none:${payload.none}`)
+    if (none is existed) {
+      throw new Error('invalid none')
+    }
+    else{
+      redis.set(`none:${payload.none}`,payload.none)
+    }
+  */
 ```
 
 ## Conclusion

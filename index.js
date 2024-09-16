@@ -78,6 +78,9 @@ const verifyESignature = async (eSignature) => {
     if (none is existed) {
       throw new Error('invalid none')
     }
+    else{
+      redis.set(`none:${payload.none}`, true, 60*60)
+    }
   */
   const result = await jwt.verify(eSignature, PUBLIC_KEY, { algorithms: 'RS256' })
   return result
