@@ -61,7 +61,7 @@ const verifyESignature = async (eSignature) => {
   // const {kid} = header
   // const queryDBPublicKey = await db?.findPublicKeyByKid(kid)
   /* check timestamp and none */
-  if (payload.none === undefined) {
+  if (payload.nonce === undefined) {
     throw new Error('none is required')
   }
   if (payload.timestamp === undefined) {
@@ -70,16 +70,16 @@ const verifyESignature = async (eSignature) => {
   if (new Date().getTime() - payload.timestamp > 60 * 60 * 1000) {
     throw new Error('invalid timestamp')
   }
-  if (!payload.none) {
+  if (!payload.nonce) {
     throw new Error('invalid none')
   }
   /* 
-    redis.get(`none:${payload.none}`)
-    if (none is existed) {
-      throw new Error('invalid none')
+    const nonce = redis.get(`nonce:${payload.nonce}`)
+    if (nonce is existed) {
+      throw new Error('invalid nonce')
     }
     else{
-      redis.set(`none:${payload.none}`, true, 60*60)
+      redis.set(`nonce:${payload.nonce}`, true, 60*60)
     }
   */
   const result = await jwt.verify(eSignature, PUBLIC_KEY, { algorithms: 'RS256' })
@@ -90,7 +90,7 @@ generateESignature({
   userId: 12,
   email: 'ndthang0000@gmail.com',
   timestamp: new Date().getTime(),
-  nonce: randomNone(4)
+  nonce: randomNone(10)
 }, KID)
   .then(async (data) => {
     console.log({ JWT: data })
